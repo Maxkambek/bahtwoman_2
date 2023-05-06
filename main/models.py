@@ -39,7 +39,7 @@ class MainTest(models.Model):
 
 class UserQuestion(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE,related_name='paid_questions')
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='paid_questions')
     is_paid = models.BooleanField(default=False)
 
     def __str__(self):

@@ -35,8 +35,8 @@ class MainTestSerializer(serializers.ModelSerializer):
 
 
 class UserQuestionSerializer(serializers.ModelSerializer):
-    paid_questions = QuestionListSerializer(many=True)
+    question = QuestionListSerializer()
 
     class Meta:
         model = UserQuestion
-        fields = ['paid_questions']
+        fields = ['question','is_paid']

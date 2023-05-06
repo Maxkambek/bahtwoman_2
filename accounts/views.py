@@ -129,11 +129,14 @@ class ChangePasswordAPI(generics.GenericAPIView):
     def patch(self, request, *args, **kwargs):
         user = request.user
         pas1 = request.data['password']
+        pas2 = request.data['old_password']
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user.set_password(pas1)
-        user.save()
-        return response.Response({'success': True, 'message': 'Successfully changed password'})
+        if user.check_password(pas2):
+            user.set_password(pas1)
+            user.save()
+            return response.Response({'success': True, 'message': 'Successfully changed password'})
+        return response.Response({'message': 'old password incorrect'}, status=400)
 
 
 class UserAPI(generics.RetrieveDestroyAPIView):
