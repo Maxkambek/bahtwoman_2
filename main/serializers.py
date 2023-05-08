@@ -1,11 +1,36 @@
 from rest_framework import serializers
-from .models import Question, QuestionVariant, UserQuestion, MainTest, RegisterTest
+from .models import Question, QuestionVariant, UserQuestion, MainTest, RegisterTest, RegisterTestVariant, \
+    RegisterVariantsVariant, ThirdVariant
+
+
+class ThirdVariantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ThirdVariant
+        fields = ['name']
+
+
+class VariantsVariantSerializer(serializers.ModelSerializer):
+    third_variant = ThirdVariantSerializer(many=True)
+
+    class Meta:
+        model = RegisterVariantsVariant
+        fields = ['name', 'third_variant']
+
+
+class RegisterVariantSerializer(serializers.ModelSerializer):
+    second_variant = VariantsVariantSerializer(many=True)
+
+    class Meta:
+        model = RegisterTestVariant
+        fields = ['name', 'second_variant']
 
 
 class RegisterTestSerializer(serializers.ModelSerializer):
+    first_variant = RegisterVariantSerializer(many=True)
+
     class Meta:
         model = RegisterTest
-        fields = ['id', 'question']
+        fields = ['id', 'question_name', 'first_variant']
 
 
 class QuestionVariantSerializer(serializers.ModelSerializer):
@@ -17,7 +42,7 @@ class QuestionVariantSerializer(serializers.ModelSerializer):
 class QuestionListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Question
-        fields = ['id', 'text_desc', 'question', 'some_title', 'red_title', 'comment']
+        fields = ['id', 'question', 'price', 'image']
 
 
 class QuestionDetailSerializer(serializers.ModelSerializer):
@@ -25,7 +50,8 @@ class QuestionDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Question
-        fields = ['id', 'text_desc', 'question', 'some_title', 'red_title', 'question_variants', 'comment']
+        fields = ['id', 'image', 'price', 'text_desc', 'question', 'some_title', 'red_title', 'question_variants',
+                  'comment']
 
 
 class MainTestSerializer(serializers.ModelSerializer):
@@ -39,4 +65,4 @@ class UserQuestionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserQuestion
-        fields = ['question','is_paid']
+        fields = ['question', 'is_paid']

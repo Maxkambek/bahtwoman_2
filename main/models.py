@@ -8,6 +8,8 @@ class Question(models.Model):
     some_title = models.TextField(null=True, blank=True)
     red_title = models.TextField(null=True, blank=True)
     comment = models.TextField(null=True, blank=True)
+    image = models.ImageField(upload_to='images/', null=True, blank=True)
+    price = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
         return f'{self.id}'
@@ -19,10 +21,34 @@ class QuestionVariant(models.Model):
 
 
 class RegisterTest(models.Model):
-    question = models.TextField()
+    question_name = models.TextField()
 
     def __str__(self):
-        return f'{self.id}'
+        return self.question_name
+
+
+class RegisterTestVariant(models.Model):
+    name = models.TextField()
+    test = models.ForeignKey(RegisterTest, on_delete=models.CASCADE, related_name='first_variant')
+
+    def __str__(self):
+        return self.name
+
+
+class RegisterVariantsVariant(models.Model):
+    name = models.TextField()
+    var = models.ForeignKey(RegisterTestVariant, on_delete=models.CASCADE, related_name='second_variant')
+
+    def __str__(self):
+        return self.name
+
+
+class ThirdVariant(models.Model):
+    name = models.TextField()
+    var = models.ForeignKey(RegisterVariantsVariant, on_delete=models.CASCADE, related_name='third_variant')
+
+    def __str__(self):
+        return self.name
 
 
 class MainTest(models.Model):

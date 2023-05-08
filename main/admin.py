@@ -1,7 +1,11 @@
 from django.contrib import admin
-from .models import Question, QuestionVariant, MainTest, RegisterTest, UserQuestion
+from .models import Question, QuestionVariant, MainTest, RegisterTest, UserQuestion, RegisterTestVariant, \
+    RegisterVariantsVariant, ThirdVariant
 
 admin.site.register(UserQuestion)
+admin.site.register(RegisterTestVariant)
+admin.site.register(RegisterVariantsVariant)
+admin.site.register(ThirdVariant)
 
 
 class VarAdmin(admin.StackedInline):
