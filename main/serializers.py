@@ -1,36 +1,11 @@
 from rest_framework import serializers
-from .models import Question, QuestionVariant, UserQuestion, MainTest, RegisterTest, RegisterTestVariant, \
-    RegisterVariantsVariant, ThirdVariant
-
-
-class ThirdVariantSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ThirdVariant
-        fields = ['name']
-
-
-class VariantsVariantSerializer(serializers.ModelSerializer):
-    third_variant = ThirdVariantSerializer(many=True)
-
-    class Meta:
-        model = RegisterVariantsVariant
-        fields = ['name', 'third_variant']
-
-
-class RegisterVariantSerializer(serializers.ModelSerializer):
-    second_variant = VariantsVariantSerializer(many=True)
-
-    class Meta:
-        model = RegisterTestVariant
-        fields = ['name', 'second_variant']
+from .models import Question, QuestionVariant, UserQuestion, MainTest, RegisterTest
 
 
 class RegisterTestSerializer(serializers.ModelSerializer):
-    first_variant = RegisterVariantSerializer(many=True)
-
     class Meta:
         model = RegisterTest
-        fields = ['id', 'question_name', 'first_variant']
+        fields = ['question_name', 'answer']
 
 
 class QuestionVariantSerializer(serializers.ModelSerializer):
@@ -42,7 +17,7 @@ class QuestionVariantSerializer(serializers.ModelSerializer):
 class QuestionListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Question
-        fields = ['id', 'question', 'price', 'image']
+        fields = ['id', 'question']
 
 
 class QuestionDetailSerializer(serializers.ModelSerializer):
@@ -57,7 +32,7 @@ class QuestionDetailSerializer(serializers.ModelSerializer):
 class MainTestSerializer(serializers.ModelSerializer):
     class Meta:
         model = MainTest
-        fields = ['id', 'question', 'answer_a', 'answer_b', 'answer_c', 'answer_d']
+        fields = ['id', 'question', 'answer_a', 'answer_b', 'answer_c', 'answer_d','answer_e']
 
 
 class UserQuestionSerializer(serializers.ModelSerializer):

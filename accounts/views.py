@@ -3,12 +3,29 @@ from django.contrib.auth import authenticate
 from rest_framework import generics, status, permissions, response, views
 from rest_framework.authtoken.models import Token
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from .utils import verify
 from .serializers import RegisterSerializer, LoginSerializer, ChangePasswordSerializer, ResetPasswordSerializer, \
-    UserSerializer, VerifyPhoneSerializer, ResetPasswordConfirmSerializer, UserCardSerializer
-from .models import User, VerifyPhone, UserCard
-# from main.models import UserQuestion, Question
+    UserSerializer, VerifyPhoneSerializer, ResetPasswordConfirmSerializer, UserCardSerializer, UserDetailsSerializer
+from .models import User, VerifyPhone, UserCard, UserDetails, District
 from .validators import expire_date_validator, card_number_validator
+
+
+class UserDetailsCreateAPIView(generics.CreateAPIView):
+    queryset = UserDetails.objects.all()
+    serializer_class = UserDetailsSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.validated_data['user'] = self.request.user
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def perform_create(self, serializer):
+        serializer.save()
 
 
 class UserCardAPI(generics.CreateAPIView):
@@ -41,28 +58,15 @@ class UserCardAPI(generics.CreateAPIView):
 
 
 class RegisterAPI(generics.GenericAPIView):
-    def get_queryset(self):
-        return User.objects.all()
-
-    def get_serializer_class(self):
-        return RegisterSerializer
+    serializer_class = RegisterSerializer
 
     def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        phone = serializer.validated_data['phone']
+        phone = self.request.data['phone']
         if User.objects.filter(phone=phone, is_active=True).first():
             return response.Response({'message': "This number already exist"}, status=status.HTTP_302_FOUND)
-        code = str(randint(10000, 100000))
-        if User.objects.filter(phone=phone, is_active=False).first():
-            verify(phone, code)
-            VerifyPhone.objects.create(phone=phone, code=code)
-            return response.Response(
-                {"success": True, 'message': "A confirmation code was sent to the phone number!!!"},
-                status=status.HTTP_200_OK)
+        code = str(randint(1000, 10000))
         verify(phone, code)
         VerifyPhone.objects.create(phone=phone, code=code)
-        serializer.save()
         return response.Response({"success": True, 'message': "A confirmation code was sent to the phone number!!!"},
                                  status=status.HTTP_200_OK)
 
@@ -73,23 +77,41 @@ class RegisterConfirmAPI(generics.GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         phone = self.request.data['phone']
+        password = self.request.data['password']
         code = self.request.data['code']
+        name = self.request.data['name']
+        last_name = self.request.data['last_name']
+        given_name = self.request.data['given_name']
+        date_birth = self.request.data['date_birth']
+        passport_num = self.request.data['passport_num']
+        passport_expire = self.request.data['passport_expire']
+        district = self.request.data['district']
+        address = self.request.data['address']
         v = VerifyPhone.objects.filter(phone=phone, code=code).first()
         if v:
             v.delete()
         else:
             return response.Response({'message': "Confirmation code incorrect!"}, status=status.HTTP_400_BAD_REQUEST)
-        user = User.objects.filter(phone=phone).first()
+        # distric = District.objects.filter(id=district).first()
+        user = User.objects.create(
+            phone=phone,
+            name=name,
+            last_name=last_name,
+            given_name=given_name,
+            date_birth=date_birth,
+            passport_num=passport_num,
+            passport_expire=passport_expire,
+            # district=distric,
+            address=address,
+            password=password
+        )
         user.is_active = True
         user.save()
-        # for i in Question.objects.all():
-        #     UserQuestion.objects.create(user_id=user.id, question_id=i.id)
         token = Token.objects.create(user=user)
-        data = dict()
-        data['token'] = token.key
-        user_serializer = UserSerializer(user).data
-        for k, v in user_serializer.items():
-            data[k] = v
+        data = {
+            'message': 'User verified',
+            'token': str(token)
+        }
         return response.Response(data, status=status.HTTP_201_CREATED)
 
 

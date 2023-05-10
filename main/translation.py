@@ -1,31 +1,11 @@
 from modeltranslation.translator import register, TranslationOptions
-from .models import RegisterTestVariant, RegisterTest, RegisterVariantsVariant, ThirdVariant, QuestionVariant, MainTest, \
+from .models import QuestionVariant, MainTest, \
     Question
 
 
 @register(MainTest)
 class MainTestTrans(TranslationOptions):
-    fields = ('question', 'answer_a', 'answer_b', 'answer_c', 'answer_d', 'true_answer')
-
-
-@register(RegisterTest)
-class RegisterTrans(TranslationOptions):
-    fields = ('question_name',)
-
-
-@register(RegisterTestVariant)
-class RegisterTestTrans(TranslationOptions):
-    fields = ('name',)
-
-
-@register(RegisterVariantsVariant)
-class RegisterSecTrans(TranslationOptions):
-    fields = ('name',)
-
-
-@register(ThirdVariant)
-class RegisterThirdTrans(TranslationOptions):
-    fields = ('name',)
+    fields = ('question', 'answer_a', 'answer_b', 'answer_c', 'answer_d', 'answer_e')
 
 
 @register(QuestionVariant)

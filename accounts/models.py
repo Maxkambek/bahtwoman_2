@@ -9,6 +9,21 @@ phone_regex = RegexValidator(
 )
 
 
+class Region(models.Model):
+    name = models.CharField(max_length=123)
+
+    def __str__(self):
+        return self.name
+
+
+class District(models.Model):
+    name = models.CharField(max_length=123)
+    region = models.ForeignKey(Region, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+
 class UserManager(BaseUserManager):
     def create_user(self, phone, password=None, **kwargs):
         if not phone:
@@ -31,8 +46,14 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=350)
+    last_name = models.CharField(max_length=132, null=True, blank=True)
+    given_name = models.CharField(max_length=132, null=True, blank=True)
+    date_birth = models.CharField(max_length=132, null=True, blank=True)
+    passport_num = models.CharField(max_length=20, null=True, blank=True)
+    passport_expire = models.CharField(max_length=20, null=True, blank=True)
+    district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True, blank=True)
+    address = models.CharField(max_length=223, null=True, blank=True)
     phone = models.CharField(validators=[phone_regex], max_length=12, unique=True)
-    email = models.EmailField(null=True)
     is_superuser = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
@@ -42,6 +63,26 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.phone
+
+
+class UserDetails(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    education = models.CharField(max_length=40)
+    family_status = models.CharField(max_length=333)
+    count_child = models.CharField(max_length=50)
+    social_status = models.CharField(max_length=333)
+    main_problem = models.CharField(max_length=333)
+    mental_problem = models.CharField(max_length=333)
+    relative_problem = models.CharField(max_length=333)
+    husband_problem = models.CharField(max_length=333)
+    divorce_problem = models.CharField(max_length=333)
+    not_married_problem = models.CharField(max_length=333)
+    sexual_problem = models.CharField(max_length=333)
+    child_problem = models.CharField(max_length=333)
+    work_problem = models.CharField(max_length=333)
+
+    def __str__(self):
+        return self.user.phone
 
 
 class VerifyPhone(models.Model):

@@ -22,33 +22,11 @@ class QuestionVariant(models.Model):
 
 class RegisterTest(models.Model):
     question_name = models.TextField()
+    answer = models.TextField(null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.question_name
-
-
-class RegisterTestVariant(models.Model):
-    name = models.TextField()
-    test = models.ForeignKey(RegisterTest, on_delete=models.CASCADE, related_name='first_variant')
-
-    def __str__(self):
-        return self.name
-
-
-class RegisterVariantsVariant(models.Model):
-    name = models.TextField()
-    var = models.ForeignKey(RegisterTestVariant, on_delete=models.CASCADE, related_name='second_variant')
-
-    def __str__(self):
-        return self.name
-
-
-class ThirdVariant(models.Model):
-    name = models.TextField()
-    var = models.ForeignKey(RegisterVariantsVariant, on_delete=models.CASCADE, related_name='third_variant')
-
-    def __str__(self):
-        return self.name
 
 
 class MainTest(models.Model):
@@ -57,6 +35,7 @@ class MainTest(models.Model):
     answer_b = models.CharField(max_length=221)
     answer_c = models.CharField(max_length=221, null=True, blank=True)
     answer_d = models.CharField(max_length=221, null=True, blank=True)
+    answer_e = models.CharField(max_length=221, null=True, blank=True)
     true_answer = models.CharField(max_length=221)
 
     def __str__(self):

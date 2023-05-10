@@ -1,13 +1,14 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import UserQuestion, Question, MainTest, RegisterTest
-from .serializers import UserQuestionSerializer, MainTestSerializer, RegisterTestSerializer, QuestionDetailSerializer
+from .serializers import UserQuestionSerializer, MainTestSerializer, RegisterTestSerializer, QuestionDetailSerializer, \
+    QuestionListSerializer
 from rest_framework import generics
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
 
-class RegisterTestListAPIView(generics.ListAPIView):
+class RegisterTestListAPIView(generics.CreateAPIView):
     queryset = RegisterTest.objects.all()
     serializer_class = RegisterTestSerializer
 
@@ -47,14 +48,21 @@ class MainTestCheck(APIView):
             return Response('Error', status=400)
 
 
-class QuestionListAPIView(generics.ListAPIView):
-    serializer_class = UserQuestionSerializer
+class QuestionListAPIView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
+    def get(self, request):
         queryset = UserQuestion.objects.filter(user=self.request.user)
-        return queryset
+        data = []
+        for i in queryset:
+            question = Question.objects.get(id=i.question_id)
+            data.append(dict(
+                id=i.question_id,
+                question=question.question,
+                is_paid=i.is_paid
+            ))
+        return Response(data, status=200)
 
 
 class QuestionRetrieveAPIView(generics.RetrieveAPIView):
