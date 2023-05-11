@@ -1,6 +1,27 @@
 from modeltranslation.translator import register, TranslationOptions
 from .models import QuestionVariant, MainTest, \
-    Question
+    Question, Workout, QuestionVariantForFirst
+from accounts.models import Region, District
+
+
+@register(QuestionVariantForFirst)
+class First(TranslationOptions):
+    fields = ('text',)
+
+
+@register(Region)
+class RegionTrans(TranslationOptions):
+    fields = ('name',)
+
+
+@register(District)
+class DistrictTrans(TranslationOptions):
+    fields = ('name',)
+
+
+@register(Workout)
+class WorkoutTrans(TranslationOptions):
+    fields = ('text',)
 
 
 @register(MainTest)

@@ -38,6 +38,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -91,14 +92,14 @@ LOCALE_PATHS = (
     os.path.join(BASE_DIR, 'locale'),
 )
 LANGUAGES = (
-    ('ky', 'Kyrgyz'),
     ('uz', 'Uzbek'),
+    ('ky', 'Kyrgyz')
 )
-DEFAULT_LANGUAGE = 2
+DEFAULT_LANGUAGE = 1
 LANGUAGE_CODE = 'uz'
 
 MODELTRANSLATION_DEFAULT_LANGUAGE = 'uz'
-MODELTRANSLATION_LANGUAGES = ('ky', 'uz')
+MODELTRANSLATION_LANGUAGES = ('uz', 'ky')
 MODELTRANSLATION_TRANSLATION_FILES = (
     'main.translation',
 )

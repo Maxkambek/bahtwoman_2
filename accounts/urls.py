@@ -1,9 +1,11 @@
 from django.urls import path
 from .views import LoginAPI, RegisterAPI, RegisterConfirmAPI, ChangePasswordAPI, UserAPI, ResetPasswordAPI, \
     ResetPasswordConfirmAPI, UserCardAPI, VerifyPhoneResetPasswordAPI, UserDetailsCreateAPIView
+from .district import CityCreateView
 
 urlpatterns = [
-    path('<int:pk>/', UserAPI.as_view()),
+    path('', CityCreateView.as_view()),
+    path('user-details/', UserAPI.as_view()),
     path('login/', LoginAPI.as_view()),
     path('card/', UserCardAPI.as_view()),
     path('register/', RegisterAPI.as_view()),

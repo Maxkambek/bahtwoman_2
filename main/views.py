@@ -23,7 +23,6 @@ class MainTestCheck(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
-        try:
             ans = self.request.data['answers']
             ans = list(ans)
             if not ans:
@@ -44,8 +43,6 @@ class MainTestCheck(APIView):
                         except:
                             pass
             return Response({'message': f'Sizda {len(lst)} ta savol chiqdi'}, status=200)
-        except:
-            return Response('Error', status=400)
 
 
 class QuestionListAPIView(APIView):

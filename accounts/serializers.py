@@ -5,8 +5,7 @@ from .models import User, phone_regex, UserCard, UserDetails
 class UserDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserDetails
-        fields = '__all__'
-        exclude = ('user',)
+        exclude = ['user']
 
 
 class UserCardSerializer(serializers.ModelSerializer):
@@ -18,14 +17,14 @@ class UserCardSerializer(serializers.ModelSerializer):
 class VerifyPhoneSerializer(serializers.Serializer):
     phone = serializers.CharField(validators=[phone_regex], max_length=12)
     code = serializers.IntegerField(max_value=9999)
-    name = serializers.CharField(max_length=350)
-    last_name = serializers.CharField(max_length=132)
-    given_name = serializers.CharField(max_length=132)
-    date_birth = serializers.CharField(max_length=132)
-    passport_num = serializers.CharField(max_length=20)
-    passport_expire = serializers.CharField(max_length=20)
-    district = serializers.IntegerField()
-    address = serializers.CharField(max_length=223)
+    # name = serializers.CharField(max_length=350)
+    # last_name = serializers.CharField(max_length=132)
+    # given_name = serializers.CharField(max_length=132)
+    # date_birth = serializers.CharField(max_length=132)
+    # passport_num = serializers.CharField(max_length=20)
+    # passport_expire = serializers.CharField(max_length=20)
+    # district = serializers.IntegerField()
+    # address = serializers.CharField(max_length=223)
     password = serializers.CharField(max_length=64, min_length=4, write_only=True)
 
 
@@ -70,7 +69,8 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'phone', 'name']
+        fields = ['id', 'phone', 'name', 'last_name', 'given_name', 'date_birth', 'passport_num', 'passport_expire',
+                  'district', 'address']
 
     phone = serializers.CharField(max_length=12, validators=[phone_regex])
     id = serializers.IntegerField(read_only=True)

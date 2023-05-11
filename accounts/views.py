@@ -79,30 +79,13 @@ class RegisterConfirmAPI(generics.GenericAPIView):
         phone = self.request.data['phone']
         password = self.request.data['password']
         code = self.request.data['code']
-        name = self.request.data['name']
-        last_name = self.request.data['last_name']
-        given_name = self.request.data['given_name']
-        date_birth = self.request.data['date_birth']
-        passport_num = self.request.data['passport_num']
-        passport_expire = self.request.data['passport_expire']
-        district = self.request.data['district']
-        address = self.request.data['address']
         v = VerifyPhone.objects.filter(phone=phone, code=code).first()
         if v:
             v.delete()
         else:
             return response.Response({'message': "Confirmation code incorrect!"}, status=status.HTTP_400_BAD_REQUEST)
-        # distric = District.objects.filter(id=district).first()
         user = User.objects.create(
             phone=phone,
-            name=name,
-            last_name=last_name,
-            given_name=given_name,
-            date_birth=date_birth,
-            passport_num=passport_num,
-            passport_expire=passport_expire,
-            # district=distric,
-            address=address,
             password=password
         )
         user.is_active = True
@@ -161,16 +144,27 @@ class ChangePasswordAPI(generics.GenericAPIView):
         return response.Response({'message': 'old password incorrect'}, status=400)
 
 
-class UserAPI(generics.RetrieveDestroyAPIView):
+class UserAPI(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserSerializer
     queryset = User.objects.all()
+    permission_classes = (permissions.IsAuthenticated,)
+    authentication_classes = [TokenAuthentication]
 
     def patch(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.serializer_class(instance=instance, data=self.request.data, partial=True)
+        serializer = self.serializer_class(instance=self.request.user, data=self.request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return response.Response(serializer.data)
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.request.user
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.request.user
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class ResetPasswordAPI(generics.GenericAPIView):
@@ -212,3 +206,5 @@ class ResetPasswordConfirmAPI(generics.GenericAPIView):
         user.set_password(pas1)
         user.save()
         return response.Response({'success': True, 'message': "Password restored"})
+
+

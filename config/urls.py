@@ -24,12 +24,12 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-    path('user/', include('accounts.urls')),
-    path('main/', include('main.urls')),
+
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
-# urlpatterns = [
-#     *i18n_patterns(*urlpatterns, prefix_default_language=False),
-# ]
+urlpatterns += i18n_patterns(
+    path('user/', include('accounts.urls')),
+    path('main/', include('main.urls')),
+)

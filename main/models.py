@@ -19,6 +19,22 @@ class QuestionVariant(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='question_variants')
     text = models.TextField()
 
+    def __str__(self):
+        return f'{self.id}'
+
+
+class QuestionVariantForFirst(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='for_first_question')
+    text = models.TextField()
+
+
+class Workout(models.Model):
+    text = models.TextField()
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='work_outs')
+
+    def __str__(self):
+        return f'{self.id}'
+
 
 class RegisterTest(models.Model):
     question_name = models.TextField()
