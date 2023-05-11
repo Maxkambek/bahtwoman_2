@@ -1,5 +1,17 @@
 from rest_framework import serializers
-from .models import User, phone_regex, UserCard, UserDetails
+from .models import User, phone_regex, UserCard, UserDetails, Region, District
+
+
+class RegionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Region
+        fields = ['id', 'name']
+
+
+class DistrictSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = District
+        fields = ['id', 'region', 'name']
 
 
 class UserDetailsSerializer(serializers.ModelSerializer):

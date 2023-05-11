@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import LoginAPI, RegisterAPI, RegisterConfirmAPI, ChangePasswordAPI, UserAPI, ResetPasswordAPI, \
-    ResetPasswordConfirmAPI, UserCardAPI, VerifyPhoneResetPasswordAPI, UserDetailsCreateAPIView
+    ResetPasswordConfirmAPI, UserCardAPI, VerifyPhoneResetPasswordAPI, UserDetailsCreateAPIView, RegionListAPIView, \
+    DistrictListAPIView
 from .district import CityCreateView
 
 urlpatterns = [
@@ -15,4 +16,6 @@ urlpatterns = [
     path('verify-reset-password/', VerifyPhoneResetPasswordAPI.as_view()),
     path('confirm-reset-password/', ResetPasswordConfirmAPI.as_view()),
     path('register-question/', UserDetailsCreateAPIView.as_view()),
+    path('regions/', RegionListAPIView.as_view()),
+    path('districs/', DistrictListAPIView.as_view())
 ]
