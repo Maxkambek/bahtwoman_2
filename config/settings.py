@@ -28,10 +28,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
-    # 'ckeditor',
 
     'accounts',
     'main',
+    'orders',
 ]
 
 MIDDLEWARE = [

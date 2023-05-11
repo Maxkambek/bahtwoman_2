@@ -32,4 +32,5 @@ urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += i18n_patterns(
     path('user/', include('accounts.urls')),
     path('main/', include('main.urls')),
+    path('order/', include('orders.urls')),
 )
