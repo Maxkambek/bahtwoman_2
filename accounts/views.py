@@ -8,8 +8,25 @@ from rest_framework.views import APIView
 from .utils import verify
 from .serializers import RegisterSerializer, LoginSerializer, ChangePasswordSerializer, ResetPasswordSerializer, \
     UserSerializer, VerifyPhoneSerializer, ResetPasswordConfirmSerializer, UserCardSerializer, UserDetailsSerializer
-from .models import User, VerifyPhone, UserCard, UserDetails, District
+from .models import User, VerifyPhone, UserCard, UserDetails, District, Region
 from .validators import expire_date_validator, card_number_validator
+from .serializers import RegionSerializer, DistrictSerializer
+
+
+class RegionListAPIView(generics.ListAPIView):
+    queryset = Region.objects.all()
+    serializer_class = RegionSerializer
+
+
+class DistrictListAPIView(generics.ListAPIView):
+    serializer_class = DistrictSerializer
+
+    def get_queryset(self):
+        queryset = District.objects.all()
+        region_id = self.request.GET.get('region_id')
+        if region_id:
+            queryset = queryset.filter(region_id=region_id)
+        return queryset
 
 
 class UserDetailsCreateAPIView(generics.CreateAPIView):
@@ -206,5 +223,3 @@ class ResetPasswordConfirmAPI(generics.GenericAPIView):
         user.set_password(pas1)
         user.save()
         return response.Response({'success': True, 'message': "Password restored"})
-
-
